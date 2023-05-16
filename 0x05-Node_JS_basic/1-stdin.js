@@ -10,13 +10,16 @@ const rl = readline.createInterface({
 console.log("Welcome to Holberton School, what is your name?");
 
 // Prompt the user for their name
-rl.on("line", (input) => {
-  const name = input.trim();
-
+rl.question("", (name) => {
   // Display the user's name
-  console.log("Your name is:", name);
+  console.log(`Your name is: ${name}`);
 
-  // Close the program after prompt
+  // Close the program
   console.log("This important software is now closing");
   rl.close();
+});
+
+// Handle the "close" event
+rl.on("close", () => {
+  process.exit(0);
 });
