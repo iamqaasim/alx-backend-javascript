@@ -82,8 +82,7 @@ const app = http.createServer((request, response) => {
   }
 });
 
-app.listen(port, hostname, () => {
-  // Start the server and listen for incoming requests
-});
+// Start the server and listen for incoming requests
+app.listen(port, hostname, () => {});
 
 module.exports = app; // Export the app object for external use (e.g., in testing or integration with other modules)
