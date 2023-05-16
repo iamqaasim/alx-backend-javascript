@@ -1,25 +1,27 @@
-const readline = require("readline");
-
-// Create a readline interface
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
-
 // Display the initial message
-console.log("Welcome to Holberton School, what is your name?");
+process.stdout.write("Welcome to Holberton School, what is your name?\n");
 
-// Prompt the user for their name
-rl.question("", (name) => {
-  // Display the user's name
-  console.log(`Your name is: ${name}`);
+// Check if stdin is connected to a terminal (TTY)
+if (process.stdin.isTTY) {
+  // If stdin is a TTY (terminal), handle the 'data' event
+  process.stdin.on("data", (data) => {
+    // Write the name received from stdin to stdout
+    process.stdout.write(`Your name is: ${data.toString()}`);
+    // Exit the program
+    process.exit();
+  });
+} else {
+  // If stdin is not a TTY, handle the 'data' event
+  process.stdin.on("data", (data) => {
+    // Write the name received from stdin to stdout
+    process.stdout.write(`Your name is: ${data.toString()}`);
+    // Exit the program
+    process.exit();
+  });
 
-  // Close the program
-  console.log("This important software is now closing");
-  rl.close();
-});
-
-// Handle the "close" event
-rl.on("close", () => {
-  process.exit(0);
-});
+  // Handle the 'exit' event when the program is closing
+  process.on("exit", () => {
+    // Write the closing message to stdout
+    process.stdout.write("This important software is now closing\n");
+  });
+}
