@@ -5,53 +5,51 @@ const hostname = "127.0.0.1"; // The hostname or IP address where the server wil
 const port = 1245; // The port number to listen on
 
 function countStudents(fileName) {
-  const students = {}; // Object to store students by field
-  const fields = {}; // Object to store the count of students in each field
-  let length = 0; // Variable to store the total number of students
+  const students = {}; // Store the students in an object
+  const fields = {}; // Store the count of students in each field in an object
+  let length = 0; // Store the total number of students
 
   return new Promise((resolve, reject) => {
-    readFile(fileName, (error, data) => {
-      if (error) {
-        reject(Error("Cannot load the database"));
+    readFile(fileName, (err, data) => {
+      // Read the file asynchronously
+      if (err) {
+        reject(err); // If there's an error reading the file, reject the promise
       } else {
-        const lines = data.toString().split("\n"); // Split file contents into lines
+        let output = ""; // Store the output message
 
+        const lines = data.toString().split("\n"); // Split the data into lines
         for (let i = 0; i < lines.length; i += 1) {
+          // Iterate over each line
           if (lines[i]) {
-            length += 1; // Increment the total number of students
+            length += 1; // Increment the student count
+            const field = lines[i].toString().split(","); // Split the line into fields
 
-            const field = lines[i].toString().split(","); // Split each line into fields
-
-            // Storing students by field
             if (Object.prototype.hasOwnProperty.call(students, field[3])) {
-              students[field[3]].push(field[0]);
+              students[field[3]].push(field[0]); // Add student name to the corresponding field
             } else {
-              students[field[3]] = [field[0]];
+              students[field[3]] = [field[0]]; // Create a new field with the student name
             }
 
-            // Counting students in each field
             if (Object.prototype.hasOwnProperty.call(fields, field[3])) {
-              fields[field[3]] += 1;
+              fields[field[3]] += 1; // Increment the count of students in the field
             } else {
-              fields[field[3]] = 1;
+              fields[field[3]] = 1; // Initialize the count of students in the field
             }
           }
         }
 
-        const len = length - 1; // Subtracting 1 to exclude the header line
-        console.log(`Number of students: ${len}`);
+        const l = length - 1;
+        output += `Number of students: ${l}\n`; // Add the total student count to the output
 
-        // Displaying the count of students and their names for each field
         for (const [key, value] of Object.entries(fields)) {
+          // Iterate over each field and its student count
           if (key !== "field") {
-            console.log(
-              `Number of students in ${key}: ${value}. List: ${students[
-                key
-              ].join(", ")}`
-            );
+            output += `Number of students in ${key}: ${value}. `;
+            output += `List: ${students[key].join(", ")}\n`; // Add the field and its students to the output
           }
         }
-        resolve(data);
+
+        resolve(output); // Resolve the promise with the output message
       }
     });
   });
@@ -82,7 +80,8 @@ const app = http.createServer((request, response) => {
   }
 });
 
-// Start the server and listen for incoming requests
-app.listen(port, hostname, () => {});
+app.listen(port, hostname, () => {
+  // Start the server and listen for incoming requests
+});
 
 module.exports = app; // Export the app object for external use (e.g., in testing or integration with other modules)
